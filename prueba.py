@@ -5,7 +5,7 @@ import pandas as pd
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# Ocultar ícono de GitHub
+# Ocultar ícono de GitHub y definir estilos para el modal
 st.markdown(
     """
     <style>
@@ -20,7 +20,7 @@ st.markdown(
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0,0,0,0.5);
         }
         .modal-content {
             background-color: #fefefe;
