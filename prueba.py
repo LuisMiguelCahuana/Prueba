@@ -2,33 +2,16 @@ import streamlit as st
 import requests
 import re
 import pandas as pd
+import time
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# Ocultar ícono de GitHub y definir estilos para el modal
+# --- Ocultar ícono de GitHub ---
 st.markdown(
     """
     <style>
         [data-testid="stDecoration"] {
             display: none !important;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            text-align: center;
         }
     </style>
     """,
@@ -37,13 +20,13 @@ st.markdown(
 
 st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
 
-# Inicializar estado
+# --- Inicializar estado ---
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "dataframe" not in st.session_state:
     st.session_state.dataframe = pd.DataFrame()
 
-# Función para convertir fechas
+# --- Función para convertir fechas ---
 def convertir_fecha_hora(fecha_hora_str):
     meses = {
         "January": "01", "February": "02", "March": "03", "April": "04",
@@ -57,7 +40,7 @@ def convertir_fecha_hora(fecha_hora_str):
         return f"{dia.zfill(2)}/{mes_num}/{anio} {hora}"
     return fecha_hora_str
 
-# FORMULARIO DE LOGIN
+# --- FORMULARIO DE LOGIN ---
 if not st.session_state.logged_in:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -67,6 +50,15 @@ if not st.session_state.logged_in:
             submitted = st.form_submit_button("🔓 Humano inicia sesión")
 
             if submitted:
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+
+                for i in range(100):
+                    # Actualizar barra de progreso
+                    progress_bar.progress(i + 1)
+                    status_text.text(f"Procesando... {i + 1}%")
+                    time.sleep(0.05)  # Simular tiempo de procesamiento
+
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
                 data_url = "http://sigof.distriluz.com.pe/plus/ComlecOrdenlecturas/ajax_mostar_mapa_selfie"
                 with requests.Session() as session:
@@ -82,25 +74,6 @@ if not st.session_state.logged_in:
                     if "Usuario o contraseña incorrecto" in response.text:
                         st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
-                        # Mostrar modal con GIF de carga
-                        st.markdown(
-                            """
-                            <div id="myModal" class="modal">
-                                <div class="modal-content">
-                                    <img src="https://drive.google.com/uc?export=view&id=1Z2jCA6IocU6MCvzgO67yJ22M2C7TR5rx" alt="Loading..." style="width: 100px;">
-                                </div>
-                            </div>
-                            <script>
-                                var modal = document.getElementById("myModal");
-                                modal.style.display = "block";
-                                setTimeout(function() {
-                                    modal.style.display = "none";
-                                }, 3000); // Ocultar modal después de 3 segundos
-                            </script>
-                            """,
-                            unsafe_allow_html=True
-                        )
-
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
                         data_cleaned = data.replace("\\/", "/")
@@ -129,7 +102,7 @@ if not st.session_state.logged_in:
                         else:
                             st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
 
-# GALERÍA DE SELFIES
+# --- GALERÍA DE SELFIES ---
 if st.session_state.logged_in and not st.session_state.dataframe.empty:
     df = st.session_state.dataframe
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -158,7 +131,7 @@ if st.session_state.logged_in and not st.session_state.dataframe.empty:
             unsafe_allow_html=True
         )
 
-# Footer fijo y centrado
+# --- Footer fijo y centrado ---
 st.markdown(
     """
     <style>
