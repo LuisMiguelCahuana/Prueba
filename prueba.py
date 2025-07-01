@@ -67,7 +67,7 @@ if not st.session_state.logged_in:
                     }
                     response = session.post(login_url, data=credentials, headers=headers)
                     if "Usuario o contraseña incorrecto" in response.text:
-                        st.error("🧠 Usuario o contraseña incorrectos.")
+                        st.error("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
                     else:
                         # Mostrar barra de progreso solo si las credenciales son correctas
                         progress_bar = st.progress(0)
