@@ -47,16 +47,20 @@ if not st.session_state.logged_in:
         with st.form("login_form"):
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
-            submitted = st.form_submit_button("🔓 Humano inicia sesión")
 
-            if submitted:
-                progress_bar = st.progress(0)
+            # Crear columnas para el botón y la barra de progreso
+            button_col, progress_col = st.columns([2, 1])
+            with button_col:
+                submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            with progress_col:
+                progress_bar = st.empty()
                 status_text = st.empty()
 
+            if submitted:
                 for i in range(100):
                     # Actualizar barra de progreso
                     progress_bar.progress(i + 1)
-                    status_text.text(f"Procesando... {i + 1}%")
+                    status_text.text(f"{i + 1}%")
                     time.sleep(0.05)  # Simular tiempo de procesamiento
 
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
