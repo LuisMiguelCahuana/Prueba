@@ -5,7 +5,7 @@ import pandas as pd
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# --- Ocultar ícono de GitHub ---
+# Ocultar ícono de GitHub
 st.markdown(
     """
     <style>
@@ -19,13 +19,13 @@ st.markdown(
 
 st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
 
-# --- Inicializar estado ---
+# Inicializar estado
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "dataframe" not in st.session_state:
     st.session_state.dataframe = pd.DataFrame()
 
-# --- Función para convertir fechas ---
+# Función para convertir fechas
 def convertir_fecha_hora(fecha_hora_str):
     meses = {
         "January": "01", "February": "02", "March": "03", "April": "04",
@@ -39,7 +39,7 @@ def convertir_fecha_hora(fecha_hora_str):
         return f"{dia.zfill(2)}/{mes_num}/{anio} {hora}"
     return fecha_hora_str
 
-# --- FORMULARIO DE LOGIN ---
+# FORMULARIO DE LOGIN
 if not st.session_state.logged_in:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -47,6 +47,7 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
             submitted = st.form_submit_button("🔓 Humano inicia sesión")
+
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
                 data_url = "http://sigof.distriluz.com.pe/plus/ComlecOrdenlecturas/ajax_mostar_mapa_selfie"
@@ -63,6 +64,22 @@ if not st.session_state.logged_in:
                     if "Usuario o contraseña incorrecto" in response.text:
                         st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
+                        # Mostrar GIF de carga
+                        st.markdown(
+                            """
+                            <div id="loading-gif" style="text-align: center;">
+                                <img src="https://drive.google.com/uc?export=view&id=1Z2jCA6IocU6MCvzgO67yJ22M2C7TR5rx" alt="Loading..." style="width: 100px;">
+                            </div>
+                            <script>
+                            function hideGif() {
+                                document.getElementById('loading-gif').style.display = 'none';
+                            }
+                            setTimeout(hideGif, 3000); // Ocultar GIF después de 3 segundos
+                            </script>
+                            """,
+                            unsafe_allow_html=True
+                        )
+
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
                         data_cleaned = data.replace("\\/", "/")
@@ -91,7 +108,7 @@ if not st.session_state.logged_in:
                         else:
                             st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
 
-# --- GALERÍA DE SELFIES ---
+# GALERÍA DE SELFIES
 if st.session_state.logged_in and not st.session_state.dataframe.empty:
     df = st.session_state.dataframe
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -120,7 +137,7 @@ if st.session_state.logged_in and not st.session_state.dataframe.empty:
             unsafe_allow_html=True
         )
 
-# --- Footer fijo y centrado ---
+# Footer fijo y centrado
 st.markdown(
     """
     <style>
