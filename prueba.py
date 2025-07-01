@@ -48,12 +48,21 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Crear columnas para el botón
-            button_col = st.columns([3, 1])[0]
+            # Crear columnas para el botón y la barra de progreso
+            button_col, progress_col = st.columns([2, 1])
             with button_col:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            with progress_col:
+                progress_bar = st.empty()
+                status_text = st.empty()
 
             if submitted:
+                for i in range(100):
+                    # Actualizar barra de progreso
+                    progress_bar.progress(i + 1)
+                    status_text.text(f"{i + 1}%")
+                    time.sleep(0.05)  # Simular tiempo de procesamiento
+
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
                 data_url = "http://sigof.distriluz.com.pe/plus/ComlecOrdenlecturas/ajax_mostar_mapa_selfie"
                 with requests.Session() as session:
@@ -67,18 +76,8 @@ if not st.session_state.logged_in:
                     }
                     response = session.post(login_url, data=credentials, headers=headers)
                     if "Usuario o contraseña incorrecto" in response.text:
-                        st.error("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
+                        st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
-                        # Mostrar barra de progreso solo si las credenciales son correctas
-                        progress_bar = st.progress(0)
-                        status_text = st.empty()
-
-                        for i in range(100):
-                            # Actualizar barra de progreso
-                            progress_bar.progress(i + 1)
-                            status_text.text(f"Procesando... {i + 1}%")
-                            time.sleep(0.05)  # Simular tiempo de procesamiento
-
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
                         data_cleaned = data.replace("\\/", "/")
