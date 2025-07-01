@@ -12,6 +12,24 @@ st.markdown(
         [data-testid="stDecoration"] {
             display: none !important;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            text-align: center;
+        }
     </style>
     """,
     unsafe_allow_html=True
@@ -64,17 +82,20 @@ if not st.session_state.logged_in:
                     if "Usuario o contraseña incorrecto" in response.text:
                         st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
-                        # Mostrar GIF de carga
+                        # Mostrar modal con GIF de carga
                         st.markdown(
                             """
-                            <div id="loading-gif" style="text-align: center;">
-                                <img src="https://drive.google.com/uc?export=view&id=1Z2jCA6IocU6MCvzgO67yJ22M2C7TR5rx" alt="Loading..." style="width: 100px;">
+                            <div id="myModal" class="modal">
+                                <div class="modal-content">
+                                    <img src="https://drive.google.com/uc?export=view&id=1Z2jCA6IocU6MCvzgO67yJ22M2C7TR5rx" alt="Loading..." style="width: 100px;">
+                                </div>
                             </div>
                             <script>
-                            function hideGif() {
-                                document.getElementById('loading-gif').style.display = 'none';
-                            }
-                            setTimeout(hideGif, 3000); // Ocultar GIF después de 3 segundos
+                                var modal = document.getElementById("myModal");
+                                modal.style.display = "block";
+                                setTimeout(function() {
+                                    modal.style.display = "none";
+                                }, 3000); // Ocultar modal después de 3 segundos
                             </script>
                             """,
                             unsafe_allow_html=True
