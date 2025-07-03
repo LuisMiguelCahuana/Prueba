@@ -58,7 +58,7 @@ if not st.session_state.logged_in:
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
             # Crear columnas para el botón y la barra de progreso
-            button_col, progress_col = st.columns([2.5, 2])
+            button_col, progress_col = st.columns([3, 1.5])
             with button_col:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
             with progress_col:
