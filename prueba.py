@@ -12,6 +12,10 @@ st.markdown("""
     .stButton>button {
         width: 100%;
     }
+    .progress-container {
+        display: flex;
+        align-items: center;
+    }
     @media (max-width: 768px) {
         .progress-container {
             flex-direction: column;
@@ -33,10 +37,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-if not st.session_state.logged_in:
-    st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
-else:
-    st.markdown("<h3 style='text-align: center; color: #28a745;'>🤖 Humano Bienvenido al Seguimiento de Selfies</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
 
 # --- Inicializar estado ---
 if "logged_in" not in st.session_state:
@@ -65,15 +66,13 @@ if not st.session_state.logged_in:
         with st.form("login_form"):
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
-            
-            # Contenedores para barra de progreso y texto antes del botón
+
+            # Contenedor para el botón y la barra de progreso
+            st.markdown('<div class="progress-container">', unsafe_allow_html=True)
+            submitted = st.form_submit_button("🔓 Humano inicia sesión")
             progress_bar = st.empty()
             status_text = st.empty()
-            
-            # Botón de envío centrado en la columna del medio
-            colb1, colb2, colb3 = st.columns([1, 4, 1])
-            with colb2:
-                submitted = st.form_submit_button("🔓 Humano inicia sesión")           
+            st.markdown('</div>', unsafe_allow_html=True)
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
@@ -91,11 +90,12 @@ if not st.session_state.logged_in:
                     if "Usuario o contraseña incorrecto" in response.text:
                         st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
-                        # Mostrar barra de progreso
+                        # Mostrar barra de progreso solo si las credenciales son correctas
                         for i in range(100):
+                            # Actualizar barra de progreso
                             progress_bar.progress(i + 1)
-                           # status_text.text(f"{i + 1}%")
-                            time.sleep(0.02)  # Velocidad del progreso
+                            status_text.text(f"{i + 1}%")
+                            time.sleep(0.05)  # Simular tiempo de procesamiento
 
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
