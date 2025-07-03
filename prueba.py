@@ -63,6 +63,7 @@ if not st.session_state.logged_in:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
             with progress_col:
                 progress_bar = st.progress(0)
+            with progress_col:
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
