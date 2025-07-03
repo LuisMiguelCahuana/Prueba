@@ -12,10 +12,6 @@ st.markdown("""
     .stButton>button {
         width: 100%;
     }
-    .progress-container {
-        display: flex;
-        align-items: center;
-    }
     @media (max-width: 768px) {
         .progress-container {
             flex-direction: column;
@@ -67,14 +63,11 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Contenedor para la barra de progreso (encima del botón)
-            st.markdown('<div class="progress-container">', unsafe_allow_html=True)
+            # Contenedores para barra de progreso y texto antes del botón
             progress_bar = st.empty()
             status_text = st.empty()
-            st.markdown('</div>', unsafe_allow_html=True)
 
-# Botón de envío
-submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            submitted = st.form_submit_button("🔓 Humano inicia sesión")
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
@@ -92,12 +85,11 @@ submitted = st.form_submit_button("🔓 Humano inicia sesión")
                     if "Usuario o contraseña incorrecto" in response.text:
                         st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
-                        # Mostrar barra de progreso solo si las credenciales son correctas
+                        # Mostrar barra de progreso
                         for i in range(100):
-                            # Actualizar barra de progreso
                             progress_bar.progress(i + 1)
                             status_text.text(f"{i + 1}%")
-                            time.sleep(0.05)  # Simular tiempo de procesamiento
+                            time.sleep(0.02)  # Velocidad del progreso
 
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
