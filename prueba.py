@@ -57,12 +57,14 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Crear columnas para el botón y la barra de progreso
-            button_col, progress_col = st.columns([3, 1])
+            # Crear columnas para el botón, la barra de progreso y una columna en blanco
+            button_col, progress_col, empty_col = st.columns([3, 1, 1])
             with button_col:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
             with progress_col:
                 progress_bar = st.progress(0)
+            with empty_col:
+                st.write("")  # Columna en blanco
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
