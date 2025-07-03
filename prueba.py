@@ -10,7 +10,7 @@ st.set_page_config(page_title="LmcSelfies", layout="centered")
 st.markdown("""
 <style>
     .stButton>button {
-        width: 100%;
+        width: auto;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -58,7 +58,7 @@ if not st.session_state.logged_in:
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
             # Crear columnas para el botón y la barra de progreso
-            button_col, progress_col = st.columns([1, 2])
+            button_col, progress_col = st.columns([1, 3])
             with button_col:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
             with progress_col:
