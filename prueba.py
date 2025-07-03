@@ -33,7 +33,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+#st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+if not st.session_state.logged_in:
+    st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+else:
+    st.markdown("<h3 style='text-align: center; color: #28a745;'>🤖 Humano Bienvenido al Seguimiento de Selfies</h3>", unsafe_allow_html=True)
 
 # --- Inicializar estado ---
 if "logged_in" not in st.session_state:
