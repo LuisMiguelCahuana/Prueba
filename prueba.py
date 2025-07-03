@@ -55,8 +55,13 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Mostrar barra de progreso arriba del botón
-            progress_bar = st.progress(0)
+            # Barra de progreso y porcentaje en la misma fila
+            col_barra, col_pct = st.columns([6, 1])
+            with col_barra:
+                progress_bar = st.progress(0)
+            with col_pct:
+                porcentaje_texto = col_pct.empty()
+                porcentaje_texto.markdown("0%")
 
             # Botón
             submitted = st.form_submit_button("🔓 Humano inicia sesión")
@@ -79,6 +84,10 @@ if not st.session_state.logged_in:
                 else:
                     for i in range(101):
                         progress_bar.progress(i)
+                        porcentaje_texto.markdown(
+                            f"<div style='line-height: 35px; font-weight: bold;'>{i}%</div>",
+                            unsafe_allow_html=True
+                        )
                         time.sleep(0.02)
 
                     data_response = session.get(data_url, headers=headers)
@@ -92,7 +101,7 @@ if not st.session_state.logged_in:
                         fecha = re.search(r"Fecha Selfie:\s*(\d{1,2} de [a-zA-Z]+ de \d{4} en horas: \d{2}:\d{2}:\d{2})", block)
                         lecturista = re.search(r"Lecturista:\s*([\w\sÁÉÍÓÚáéíóúÑñ]+)", block)
                         url = re.search(r"url\":\"(https[^\"]+)", block)
-                        if fecha and lecturista and url:
+                        if fecha, lecturista, and url:
                             fecha_hora = convertir_fecha_hora(fecha.group(1).strip())
                             fecha_sola = fecha_hora.split()[0]
                             nombre = lecturista.group(1).strip()
