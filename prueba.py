@@ -10,16 +10,15 @@ st.set_page_config(page_title="LmcSelfies", layout="centered")
 st.markdown("""
 <style>
     .stButton>button {
-        width: 100%;
+        width: auto;
     }
     .progress-container {
         display: flex;
         align-items: center;
-        justify-content: space-between;
     }
     .progress-bar {
-        flex-grow: 1;
         margin-left: 10px;
+        width: 200px;
     }
     @media (max-width: 768px) {
         .progress-container {
@@ -79,7 +78,7 @@ if not st.session_state.logged_in:
             # Contenedor para el botón y la barra de progreso
             st.markdown('<div class="progress-container">', unsafe_allow_html=True)
             submitted = st.form_submit_button("🔓 Humano inicia sesión")
-            progress_bar = st.empty()
+            progress_bar = st.progress(0)
             st.markdown('</div>', unsafe_allow_html=True)
 
             if submitted:
@@ -184,4 +183,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
