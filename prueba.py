@@ -75,7 +75,7 @@ if not st.session_state.logged_in:
 
             # Contenedor visual horizontal (solo estética, funcionalidad original)
             st.markdown('<div class="horizontal-form">', unsafe_allow_html=True)
-            col_btn, col_bar = st.columns([3, 1.5])
+            col_btn, col_bar = st.columns([3, 0.2])
             with col_btn:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
             with col_bar:
