@@ -6,30 +6,37 @@ import time
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# CSS personalizado para ajustar el diseño en móviles y computadoras
+# CSS personalizado para el botón y la barra de progreso en dispositivos móviles y PC
 st.markdown("""
 <style>
     .stButton>button {
         width: auto;
     }
 
-    /* Contenedor para el botón y la barra de progreso en línea */
-    .horizontal-form {
+    /* Estilo contenedor responsive */
+    .responsive-container {
         display: flex;
-        align-items: center;
+        flex-direction: row;
         gap: 10px;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 10px;
         flex-wrap: wrap;
     }
 
-    .horizontal-form > div {
+    @media (max-width: 768px) {
+        .responsive-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+
+    .responsive-container .stButton {
         flex-shrink: 0;
     }
 
-    @media (max-width: 768px) {
-        .horizontal-form {
-            flex-direction: row;
-            align-items: flex-start;
-        }
+    .responsive-container .progress-col {
+        flex-grow: 1;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -73,12 +80,12 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Contenedor visual horizontal (solo estética, funcionalidad original)
-            st.markdown('<div class="horizontal-form">', unsafe_allow_html=True)
-            col_btn, col_bar = st.columns([3, 0.2])
-            with col_btn:
+            # Contenedor visual horizontal en PC y vertical en móviles
+            st.markdown('<div class="responsive-container">', unsafe_allow_html=True)
+            button_col, progress_col = st.columns([3, 1.5])
+            with button_col:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
-            with col_bar:
+            with progress_col:
                 progress_bar = st.progress(0)
             st.markdown('</div>', unsafe_allow_html=True)
 
