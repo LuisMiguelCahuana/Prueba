@@ -62,28 +62,15 @@ if not st.session_state.logged_in:
         with st.form("login_form"):
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
-
+            
             # Contenedores para barra de progreso y texto antes del botón
             progress_bar = st.empty()
             status_text = st.empty()
-            # CSS para centrar el botón del formulario
-            st.markdown("""
-            <style>
-                .center-button-container {
-                    display: flex;
-                    justify-content: center;
-                    margin-top: 10px;
-                }
-                .center-button-container button {
-                    width: 200px;
-                }
-            </style>
-            """, unsafe_allow_html=True)
             
-            # Contenedor centrado para el botón
-            st.markdown('<div class="center-button-container">', unsafe_allow_html=True)
-            submitted = st.form_submit_button("🔓 Humano inicia sesión")
-            st.markdown('</div>', unsafe_allow_html=True)
+            # Botón de envío centrado en la columna del medio
+            colb1, colb2, colb3 = st.columns([1, 2, 1])
+            with colb2:
+                submitted = st.form_submit_button("🔓 Humano inicia sesión")           
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
