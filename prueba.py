@@ -14,11 +14,7 @@ st.markdown("""
     }
     .progress-container {
         display: flex;
-        flex-direction: column;
         align-items: center;
-    }
-    .stProgress > div > div > div {
-        background-color: #007BFF;
     }
     @media (max-width: 768px) {
         .progress-container {
@@ -70,10 +66,14 @@ if not st.session_state.logged_in:
         with st.form("login_form"):
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
+
             # Contenedor para el botón y la barra de progreso
             st.markdown('<div class="progress-container">', unsafe_allow_html=True)
-            progress_bar = st.progress(0)
             submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            progress_bar = st.empty()
+            status_text = st.empty()
+            st.markdown('</div>', unsafe_allow_html=True)
+
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
                 data_url = "http://sigof.distriluz.com.pe/plus/ComlecOrdenlecturas/ajax_mostar_mapa_selfie"
@@ -94,7 +94,9 @@ if not st.session_state.logged_in:
                         for i in range(100):
                             # Actualizar barra de progreso
                             progress_bar.progress(i + 1)
+                            status_text.text(f"{i + 1}%")
                             time.sleep(0.05)  # Simular tiempo de procesamiento
+
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
                         data_cleaned = data.replace("\\/", "/")
@@ -122,7 +124,6 @@ if not st.session_state.logged_in:
                             st.session_state.dataframe = df
                         else:
                             st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
-            st.markdown('</div>', unsafe_allow_html=True)
 
 # --- GALERÍA DE SELFIES ---
 if st.session_state.logged_in and not st.session_state.dataframe.empty:
