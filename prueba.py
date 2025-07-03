@@ -91,7 +91,7 @@ if not st.session_state.logged_in:
                         # Mostrar barra de progreso
                         for i in range(100):
                             progress_bar.progress(i + 1)
-                            status_text.text(f"{i + 1}%")
+                           # status_text.text(f"{i + 1}%")
                             time.sleep(0.02)  # Velocidad del progreso
 
                         data_response = session.get(data_url, headers=headers)
