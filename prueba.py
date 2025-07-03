@@ -9,27 +9,8 @@ st.set_page_config(page_title="LmcSelfies", layout="centered")
 # CSS personalizado para ajustar el diseño en móviles y computadoras
 st.markdown("""
 <style>
-    .progress-container {
-        display: flex;
-        align-items: center;
-    }
-    .progress-container button {
-        width: auto;
-        margin-right: 10px;
-    }
-    .progress-bar {
-        flex-grow: 1;
-    }
-    @media (max-width: 768px) {
-        .progress-container {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .progress-container button {
-            width: 100%;
-            margin-right: 0;
-            margin-bottom: 10px;
-        }
+    .stButton>button {
+        width: 100%;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -76,11 +57,12 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Contenedor para el botón y la barra de progreso
-            st.markdown('<div class="progress-container">', unsafe_allow_html=True)
-            submitted = st.form_submit_button("🔓 Humano inicia sesión")
-            progress_bar = st.progress(0)
-            st.markdown('</div>', unsafe_allow_html=True)
+            # Crear columnas para el botón y la barra de progreso
+            button_col, progress_col = st.columns([1, 2])
+            with button_col:
+                submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            with progress_col:
+                progress_bar = st.progress(0)
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
