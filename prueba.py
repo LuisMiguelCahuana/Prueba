@@ -66,10 +66,24 @@ if not st.session_state.logged_in:
             # Contenedores para barra de progreso y texto antes del botón
             progress_bar = st.empty()
             status_text = st.empty()
-            # Botón de envío centrado en la columna del medio
-            colb1, colb2, colb3 = st.columns([1, 4, 1])
-            with colb2:
-                submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            # CSS para centrar el botón del formulario
+            st.markdown("""
+            <style>
+                .center-button-container {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 10px;
+                }
+                .center-button-container button {
+                    width: 200px;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Contenedor centrado para el botón
+            st.markdown('<div class="center-button-container">', unsafe_allow_html=True)
+            submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            st.markdown('</div>', unsafe_allow_html=True)
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
