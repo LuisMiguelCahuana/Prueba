@@ -6,7 +6,7 @@ import time
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# CSS personalizado para ajustar el diseño en móviles y computadoras
+# CSS personalizado
 st.markdown("""
 <style>
     .stButton>button {
@@ -21,7 +21,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Ocultar ícono de GitHub ---
+# Ocultar ícono de GitHub
 st.markdown(
     """
     <style>
@@ -32,12 +32,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-#st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
-if not st.session_state.logged_in:
-    st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
-else:
-    st.markdown("<h3 style='text-align: center; color: #28a745;'>🤖 Humano Bienvenido al Seguimiento de Selfies</h3>", unsafe_allow_html=True)
 
 # --- Inicializar estado ---
 if "logged_in" not in st.session_state:
@@ -61,13 +55,14 @@ def convertir_fecha_hora(fecha_hora_str):
 
 # --- FORMULARIO DE LOGIN ---
 if not st.session_state.logged_in:
+    st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋 HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         with st.form("login_form"):
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Contenedores para barra de progreso y texto antes del botón
             progress_bar = st.empty()
             status_text = st.empty()
 
@@ -89,11 +84,9 @@ if not st.session_state.logged_in:
                     if "Usuario o contraseña incorrecto" in response.text:
                         st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
-                        # Mostrar barra de progreso
                         for i in range(100):
                             progress_bar.progress(i + 1)
-                           # status_text.text(f"{i + 1}%")
-                            time.sleep(0.02)  # Velocidad del progreso
+                            time.sleep(0.02)
 
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
@@ -126,19 +119,28 @@ if not st.session_state.logged_in:
 # --- GALERÍA DE SELFIES ---
 if st.session_state.logged_in and not st.session_state.dataframe.empty:
     df = st.session_state.dataframe
+
+    # ✅ Mostrar mensaje de bienvenida
+    st.markdown("<h3 style='text-align: center; color: #28a745;'>🤖 Humano Bienvenido al Seguimiento de Selfies</h3>", unsafe_allow_html=True)
+
+    # --- Filtros ---
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         fecha_filtro = st.selectbox("📅 Humano Filtrar por Fecha", ["Todas"] + sorted(df["fecha"].unique()))
+
     df_filtrado = df.copy()
     if fecha_filtro != "Todas":
         df_filtrado = df_filtrado[df_filtrado["fecha"] == fecha_filtro]
+
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         nombre_filtro = st.selectbox("👤 Humano Filtrar por Lecturista", ["Todos"] + sorted(df_filtrado["nombre"].unique()))
     if nombre_filtro != "Todos":
         df_filtrado = df_filtrado[df_filtrado["nombre"] == nombre_filtro]
+
     st.markdown("---")
     st.markdown(f"<h4 style='text-align: center; color:#007BFF'> Humano {len(df_filtrado)} selfies📸 encontradas</h4>", unsafe_allow_html=True)
+
     for _, row in df_filtrado.iterrows():
         st.markdown(
             f"""
@@ -175,4 +177,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
