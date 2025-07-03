@@ -6,34 +6,37 @@ import time
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# --- CSS para mejorar ubicación y diseño en móviles ---
+# CSS personalizado para ajustar el diseño en móviles y computadoras
 st.markdown("""
 <style>
-    .main > div:first-child {
-        padding-top: 5px;
-    }
-    @media (max-width: 768px) {
-        .main > div:first-child {
-            padding-top: 5px !important;
-        }
-    }
     .stButton>button {
         width: 100%;
+    }
+    @media (max-width: 768px) {
+        .progress-container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
 
 # --- Ocultar ícono de GitHub ---
-st.markdown("""
-<style>
-    [data-testid="stDecoration"] {
-        display: none !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+st.markdown(
+    """
+    <style>
+        [data-testid="stDecoration"] {
+            display: none !important;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-# --- TÍTULO PRINCIPAL CENTRADO ---
-st.markdown("<h3 style='text-align: center; color: #007BFF; margin-bottom: 10px;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+if not st.session_state.logged_in:
+    st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+else:
+    st.markdown("<h3 style='text-align: center; color: #28a745;'>🤖 Humano Bienvenido al Seguimiento de Selfies</h3>", unsafe_allow_html=True)
 
 # --- Inicializar estado ---
 if "logged_in" not in st.session_state:
@@ -57,14 +60,17 @@ def convertir_fecha_hora(fecha_hora_str):
 
 # --- FORMULARIO DE LOGIN ---
 if not st.session_state.logged_in:
-    with st.container():
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
         with st.form("login_form"):
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
             
+            # Contenedores para barra de progreso y texto antes del botón
             progress_bar = st.empty()
             status_text = st.empty()
             
+            # Botón de envío centrado en la columna del medio
             colb1, colb2, colb3 = st.columns([1, 4, 1])
             with colb2:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")           
@@ -85,9 +91,11 @@ if not st.session_state.logged_in:
                     if "Usuario o contraseña incorrecto" in response.text:
                         st.error("🧠 Usuario o contraseña incorrectos.")
                     else:
+                        # Mostrar barra de progreso
                         for i in range(100):
                             progress_bar.progress(i + 1)
-                            time.sleep(0.02)
+                           # status_text.text(f"{i + 1}%")
+                            time.sleep(0.02)  # Velocidad del progreso
 
                         data_response = session.get(data_url, headers=headers)
                         data = data_response.text
@@ -146,23 +154,26 @@ if st.session_state.logged_in and not st.session_state.dataframe.empty:
             unsafe_allow_html=True
         )
 
-# --- Footer fijo ---
-st.markdown("""
-<style>
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: white;
-    padding: 10px 8px;
-    text-align: center;
-    font-size: 14px;
-    color: gray;
-    z-index: 9999;
-    border-top: 1px solid #ddd;
-}
-</style>
-<div class="footer">
-    Desarrollado por Luis M. Cahuana F.
-</div>
-""", unsafe_allow_html=True)
+# --- Footer fijo y centrado ---
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: white;
+        padding: 10px 8px;
+        text-align: center;
+        font-size: 14px;
+        color: gray;
+        z-index: 9999;
+        border-top: 1px solid #ddd;
+    }
+    </style>
+    <div class="footer">
+        Desarrollado por Luis M. Cahuana F.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
