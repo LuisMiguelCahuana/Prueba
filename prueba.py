@@ -67,12 +67,14 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Contenedor para el botón y la barra de progreso
+            # Contenedor para la barra de progreso (encima del botón)
             st.markdown('<div class="progress-container">', unsafe_allow_html=True)
-            submitted = st.form_submit_button("🔓 Humano inicia sesión")
             progress_bar = st.empty()
             status_text = st.empty()
             st.markdown('</div>', unsafe_allow_html=True)
+
+# Botón de envío
+submitted = st.form_submit_button("🔓 Humano inicia sesión")
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
