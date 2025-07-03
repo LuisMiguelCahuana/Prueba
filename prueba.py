@@ -12,6 +12,25 @@ st.markdown("""
     .stButton>button {
         width: auto;
     }
+
+    /* Contenedor para el botón y la barra de progreso en línea */
+    .horizontal-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .horizontal-form > div {
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .horizontal-form {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -54,55 +73,14 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Estilos para botón y barra horizontal
-            st.markdown("""
-                <style>
-                    .horizontal-container {
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        margin-top: 10px;
-                        flex-wrap: wrap;
-                    }
-                    .custom-button button {
-                        background-color: #007BFF;
-                        color: white;
-                        padding: 8px 20px;
-                        border: none;
-                        border-radius: 5px;
-                        font-weight: bold;
-                        cursor: pointer;
-                        font-size: 16px;
-                    }
-                    .progress-bar-container {
-                        flex: 1;
-                        height: 20px;
-                        background-color: #eee;
-                        border-radius: 10px;
-                        overflow: hidden;
-                        min-width: 120px;
-                    }
-                    .progress-bar-fill {
-                        height: 100%;
-                        width: 0%;
-                        background-color: #28a745;
-                        transition: width 0.1s ease-in-out;
-                    }
-                </style>
-            """, unsafe_allow_html=True)
-
-            st.markdown("""
-                <div class="horizontal-container">
-                    <div class="custom-button">
-                        <button type="submit">🔓 Humano inicia sesión</button>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="custom-progress"></div>
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-
-            submitted = st.form_submit_button(label="", help="Haz clic para iniciar sesión")
+            # Contenedor visual horizontal (solo estética, funcionalidad original)
+            st.markdown('<div class="horizontal-form">', unsafe_allow_html=True)
+            col_btn, col_bar = st.columns([3, 1.5])
+            with col_btn:
+                submitted = st.form_submit_button("🔓 Humano inicia sesión")
+            with col_bar:
+                progress_bar = st.progress(0)
+            st.markdown('</div>', unsafe_allow_html=True)
 
         if submitted:
             login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
@@ -121,15 +99,7 @@ if not st.session_state.logged_in:
                     st.error("🧠 Usuario o contraseña incorrectos.")
                 else:
                     for i in range(101):
-                        progress_percent = f"{i}%"
-                        st.markdown(f"""
-                            <script>
-                                var el = window.parent.document.getElementById("custom-progress");
-                                if (el) {{
-                                    el.style.width = "{progress_percent}";
-                                }}
-                            </script>
-                        """, unsafe_allow_html=True)
+                        progress_bar.progress(i)
                         time.sleep(0.02)
 
                     data_response = session.get(data_url, headers=headers)
@@ -191,21 +161,21 @@ if st.session_state.logged_in and not st.session_state.dataframe.empty:
 
 # --- Footer fijo y centrado ---
 st.markdown("""
-    <style>
-    .footer {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background-color: white;
-        padding: 10px 8px;
-        text-align: center;
-        font-size: 14px;
-        color: gray;
-        z-index: 9999;
-        border-top: 1px solid #ddd;
-    }
-    </style>
-    <div class="footer">
-        Desarrollado por Luis M. Cahuana F.
-    </div>
+<style>
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: white;
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    z-index: 9999;
+    border-top: 1px solid #ddd;
+}
+</style>
+<div class="footer">
+    Desarrollado por Luis M. Cahuana F.
+</div>
 """, unsafe_allow_html=True)
