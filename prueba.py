@@ -67,7 +67,7 @@ if not st.session_state.logged_in:
             progress_bar = st.empty()
             status_text = st.empty()
             # Botón de envío centrado en la columna del medio
-            colb1, colb2, colb3 = st.columns([0.1, 3, 0.1])
+            colb1, colb2, colb3 = st.columns([0.5, 3, 0.5])
             with colb2:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
 
