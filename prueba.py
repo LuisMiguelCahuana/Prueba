@@ -9,25 +9,26 @@ st.set_page_config(page_title="LmcSelfies", layout="centered")
 # CSS personalizado para ajustar el diseño en móviles y computadoras
 st.markdown("""
 <style>
-    .stButton>button {
-        width: auto;
-    }
     .progress-container {
         display: flex;
         align-items: center;
     }
+    .progress-container button {
+        width: auto;
+        margin-right: 10px;
+    }
     .progress-bar {
-        margin-left: 10px;
-        width: 200px;
+        flex-grow: 1;
     }
     @media (max-width: 768px) {
         .progress-container {
             flex-direction: column;
             align-items: flex-start;
         }
-        .progress-bar {
-            margin-left: 0;
+        .progress-container button {
             width: 100%;
+            margin-right: 0;
+            margin-bottom: 10px;
         }
     }
 </style>
