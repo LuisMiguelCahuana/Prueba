@@ -6,7 +6,13 @@ import time
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# CSS personalizado
+# --- Inicializar estado antes de cualquier uso ---
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "dataframe" not in st.session_state:
+    st.session_state.dataframe = pd.DataFrame()
+
+# --- CSS personalizado ---
 st.markdown("""
 <style>
     .stButton>button {
@@ -21,23 +27,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Ocultar ícono de GitHub
-st.markdown(
-    """
+# --- Ocultar ícono de GitHub ---
+st.markdown("""
     <style>
         [data-testid="stDecoration"] {
             display: none !important;
         }
     </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# --- Inicializar estado ---
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-if "dataframe" not in st.session_state:
-    st.session_state.dataframe = pd.DataFrame()
+""", unsafe_allow_html=True)
 
 # --- Función para convertir fechas ---
 def convertir_fecha_hora(fecha_hora_str):
@@ -120,10 +117,10 @@ if not st.session_state.logged_in:
 if st.session_state.logged_in and not st.session_state.dataframe.empty:
     df = st.session_state.dataframe
 
-    # ✅ Mostrar mensaje de bienvenida
+    # Mensaje de bienvenida arriba de los filtros
     st.markdown("<h3 style='text-align: center; color: #28a745;'>🤖 Humano Bienvenido al Seguimiento de Selfies</h3>", unsafe_allow_html=True)
 
-    # --- Filtros ---
+    # Filtros
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         fecha_filtro = st.selectbox("📅 Humano Filtrar por Fecha", ["Todas"] + sorted(df["fecha"].unique()))
