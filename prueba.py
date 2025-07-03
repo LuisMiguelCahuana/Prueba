@@ -64,6 +64,7 @@ if not st.session_state.logged_in:
             with progress_col:
                 progress_bar = st.progress(0)
             with progress_col:
+                progress_bar = st.progress(0)
 
             if submitted:
                 login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
