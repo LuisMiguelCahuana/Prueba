@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import re
 import pandas as pd
+import time
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
@@ -54,20 +55,15 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Espacio para porcentaje y barra de progreso arriba del botón
-            progress_text = st.empty()
+            # Mostrar barra de progreso arriba del botón
             progress_bar = st.progress(0)
 
+            # Botón
             submitted = st.form_submit_button("🔓 Humano inicia sesión")
 
         if submitted:
-            # Fase 1: Inicio
-            progress_text.text("5%")
-            progress_bar.progress(5)
-
             login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
             data_url = "http://sigof.distriluz.com.pe/plus/ComlecOrdenlecturas/ajax_mostar_mapa_selfie"
-
             with requests.Session() as session:
                 credentials = {
                     "data[Usuario][usuario]": usuario,
@@ -77,33 +73,21 @@ if not st.session_state.logged_in:
                     "User-Agent": "Mozilla/5.0",
                     "Referer": login_url
                 }
-
-                # Fase 2: Enviar login
                 response = session.post(login_url, data=credentials, headers=headers)
-                progress_text.text("20%")
-                progress_bar.progress(20)
-
                 if "Usuario o contraseña incorrecto" in response.text:
                     st.error("🧠 Usuario o contraseña incorrectos.")
-                    progress_bar.empty()
-                    progress_text.empty()
                 else:
-                    # Fase 3: Descargar datos
-                    data_response = session.get(data_url, headers=headers)
-                    progress_text.text("40%")
-                    progress_bar.progress(40)
+                    for i in range(101):
+                        progress_bar.progress(i)
+                        time.sleep(0.02)
 
+                    data_response = session.get(data_url, headers=headers)
                     data = data_response.text
                     data_cleaned = data.replace("\\/", "/")
                     data_cleaned = re.sub(r"<\/?\w+.*?>", "", data_cleaned)
                     data_cleaned = re.sub(r"\s+", " ", data_cleaned).strip()
-                    progress_text.text("60%")
-                    progress_bar.progress(60)
-
-                    # Fase 4: Procesar datos
                     blocks = re.split(r"Ver detalle", data_cleaned)
                     registros = []
-
                     for block in blocks:
                         fecha = re.search(r"Fecha Selfie:\s*(\d{1,2} de [a-zA-Z]+ de \d{4} en horas: \d{2}:\d{2}:\d{2})", block)
                         lecturista = re.search(r"Lecturista:\s*([\w\sÁÉÍÓÚáéíóúÑñ]+)", block)
@@ -118,20 +102,12 @@ if not st.session_state.logged_in:
                                 "nombre": nombre,
                                 "url": imagen_url
                             })
-
-                    progress_text.text("90%")
-                    progress_bar.progress(90)
-
                     if registros:
                         df = pd.DataFrame(registros)
                         st.session_state.logged_in = True
                         st.session_state.dataframe = df
-                        progress_text.text("100%")
-                        progress_bar.progress(100)
                     else:
                         st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
-                        progress_bar.empty()
-                        progress_text.empty()
 
 # --- GALERÍA DE SELFIES ---
 if st.session_state.logged_in and not st.session_state.dataframe.empty:
