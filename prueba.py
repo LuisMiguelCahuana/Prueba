@@ -12,6 +12,12 @@ st.markdown("""
     .stButton>button {
         width: 100%;
     }
+    @media (max-width: 768px) {
+        .stButton>button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -58,7 +64,7 @@ if not st.session_state.logged_in:
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
             # Crear columnas para el botón, la barra de progreso y una columna en blanco
-            button_col, progress_col, empty_col = st.columns([3, 1, 1])
+            button_col, progress_col, empty_col = st.columns([2, 1, 1])
             with button_col:
                 submitted = st.form_submit_button("🔓 Humano inicia sesión")
             with progress_col:
