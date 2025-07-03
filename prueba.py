@@ -16,16 +16,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Ocultar ícono de GitHub ---
-st.markdown(
-    """
-    <style>
-        [data-testid="stDecoration"] {
-            display: none !important;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<style>
+    [data-testid="stDecoration"] {
+        display: none !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
 
@@ -57,62 +54,111 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Crear columnas para el botón y la barra de progreso
-            button_col, progress_col = st.columns([3, 1.5])
-            with button_col:
-                submitted = st.form_submit_button("🔓 Humano inicia sesión")
-            with progress_col:
-                progress_bar = st.progress(0)
+            # Estilos para botón y barra horizontal
+            st.markdown("""
+                <style>
+                    .horizontal-container {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin-top: 10px;
+                        flex-wrap: wrap;
+                    }
+                    .custom-button button {
+                        background-color: #007BFF;
+                        color: white;
+                        padding: 8px 20px;
+                        border: none;
+                        border-radius: 5px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        font-size: 16px;
+                    }
+                    .progress-bar-container {
+                        flex: 1;
+                        height: 20px;
+                        background-color: #eee;
+                        border-radius: 10px;
+                        overflow: hidden;
+                        min-width: 120px;
+                    }
+                    .progress-bar-fill {
+                        height: 100%;
+                        width: 0%;
+                        background-color: #28a745;
+                        transition: width 0.1s ease-in-out;
+                    }
+                </style>
+            """, unsafe_allow_html=True)
 
-            if submitted:
-                login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
-                data_url = "http://sigof.distriluz.com.pe/plus/ComlecOrdenlecturas/ajax_mostar_mapa_selfie"
-                with requests.Session() as session:
-                    credentials = {
-                        "data[Usuario][usuario]": usuario,
-                        "data[Usuario][pass]": clave
-                    }
-                    headers = {
-                        "User-Agent": "Mozilla/5.0",
-                        "Referer": login_url
-                    }
-                    response = session.post(login_url, data=credentials, headers=headers)
-                    if "Usuario o contraseña incorrecto" in response.text:
-                        st.error("🧠 Usuario o contraseña incorrectos.")
+            st.markdown("""
+                <div class="horizontal-container">
+                    <div class="custom-button">
+                        <button type="submit">🔓 Humano inicia sesión</button>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="custom-progress"></div>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            submitted = st.form_submit_button(label="", help="Haz clic para iniciar sesión")
+
+        if submitted:
+            login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
+            data_url = "http://sigof.distriluz.com.pe/plus/ComlecOrdenlecturas/ajax_mostar_mapa_selfie"
+            with requests.Session() as session:
+                credentials = {
+                    "data[Usuario][usuario]": usuario,
+                    "data[Usuario][pass]": clave
+                }
+                headers = {
+                    "User-Agent": "Mozilla/5.0",
+                    "Referer": login_url
+                }
+                response = session.post(login_url, data=credentials, headers=headers)
+                if "Usuario o contraseña incorrecto" in response.text:
+                    st.error("🧠 Usuario o contraseña incorrectos.")
+                else:
+                    for i in range(101):
+                        progress_percent = f"{i}%"
+                        st.markdown(f"""
+                            <script>
+                                var el = window.parent.document.getElementById("custom-progress");
+                                if (el) {{
+                                    el.style.width = "{progress_percent}";
+                                }}
+                            </script>
+                        """, unsafe_allow_html=True)
+                        time.sleep(0.02)
+
+                    data_response = session.get(data_url, headers=headers)
+                    data = data_response.text
+                    data_cleaned = data.replace("\\/", "/")
+                    data_cleaned = re.sub(r"<\/?\w+.*?>", "", data_cleaned)
+                    data_cleaned = re.sub(r"\s+", " ", data_cleaned).strip()
+                    blocks = re.split(r"Ver detalle", data_cleaned)
+                    registros = []
+                    for block in blocks:
+                        fecha = re.search(r"Fecha Selfie:\s*(\d{1,2} de [a-zA-Z]+ de \d{4} en horas: \d{2}:\d{2}:\d{2})", block)
+                        lecturista = re.search(r"Lecturista:\s*([\w\sÁÉÍÓÚáéíóúÑñ]+)", block)
+                        url = re.search(r"url\":\"(https[^\"]+)", block)
+                        if fecha and lecturista and url:
+                            fecha_hora = convertir_fecha_hora(fecha.group(1).strip())
+                            fecha_sola = fecha_hora.split()[0]
+                            nombre = lecturista.group(1).strip()
+                            imagen_url = url.group(1).strip()
+                            registros.append({
+                                "fecha": fecha_sola,
+                                "nombre": nombre,
+                                "url": imagen_url
+                            })
+                    if registros:
+                        df = pd.DataFrame(registros)
+                        st.session_state.logged_in = True
+                        st.session_state.dataframe = df
                     else:
-                        # Mostrar barra de progreso solo si las credenciales son correctas
-                        for i in range(100):
-                            # Actualizar barra de progreso
-                            progress_bar.progress(i + 1)
-                            time.sleep(0.05)  # Simular tiempo de procesamiento
-
-                        data_response = session.get(data_url, headers=headers)
-                        data = data_response.text
-                        data_cleaned = data.replace("\\/", "/")
-                        data_cleaned = re.sub(r"<\/?\w+.*?>", "", data_cleaned)
-                        data_cleaned = re.sub(r"\s+", " ", data_cleaned).strip()
-                        blocks = re.split(r"Ver detalle", data_cleaned)
-                        registros = []
-                        for block in blocks:
-                            fecha = re.search(r"Fecha Selfie:\s*(\d{1,2} de [a-zA-Z]+ de \d{4} en horas: \d{2}:\d{2}:\d{2})", block)
-                            lecturista = re.search(r"Lecturista:\s*([\w\sÁÉÍÓÚáéíóúÑñ]+)", block)
-                            url = re.search(r"url\":\"(https[^\"]+)", block)
-                            if fecha and lecturista and url:
-                                fecha_hora = convertir_fecha_hora(fecha.group(1).strip())
-                                fecha_sola = fecha_hora.split()[0]
-                                nombre = lecturista.group(1).strip()
-                                imagen_url = url.group(1).strip()
-                                registros.append({
-                                    "fecha": fecha_sola,
-                                    "nombre": nombre,
-                                    "url": imagen_url
-                                })
-                        if registros:
-                            df = pd.DataFrame(registros)
-                            st.session_state.logged_in = True
-                            st.session_state.dataframe = df
-                        else:
-                            st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
+                        st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
 
 # --- GALERÍA DE SELFIES ---
 if st.session_state.logged_in and not st.session_state.dataframe.empty:
@@ -144,8 +190,7 @@ if st.session_state.logged_in and not st.session_state.dataframe.empty:
         )
 
 # --- Footer fijo y centrado ---
-st.markdown(
-    """
+st.markdown("""
     <style>
     .footer {
         position: fixed;
@@ -163,6 +208,4 @@ st.markdown(
     <div class="footer">
         Desarrollado por Luis M. Cahuana F.
     </div>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
