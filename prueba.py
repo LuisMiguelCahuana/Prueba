@@ -50,9 +50,9 @@ def convertir_fecha_hora(fecha_hora_str):
         return f"{dia.zfill(2)}/{mes_num}/{anio} {hora}"
     return fecha_hora_str
 
-# --- FORMULARIO DE LOGIN ---
+# --- FORMULARIO DE LOGIN ---007BFF
 if not st.session_state.logged_in:
-    st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋 HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: #28a745;'>📋 HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -118,7 +118,7 @@ if st.session_state.logged_in and not st.session_state.dataframe.empty:
     df = st.session_state.dataframe
 
     # Mensaje de bienvenida arriba de los filtros
-    st.markdown("<h3 style='text-align: center; color: #28a745;'>HUMANO BIENVENIDO AL SISTEMA DE SEGUIMIENTO DE SELFIES</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: #007BFF;'>HUMANO BIENVENIDO AL SISTEMA DE SEGUIMIENTO DE SELFIES</h3>", unsafe_allow_html=True)
 
     # Filtros
     col1, col2, col3 = st.columns([1, 2, 1])
