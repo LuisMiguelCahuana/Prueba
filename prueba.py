@@ -6,42 +6,16 @@ import time
 
 st.set_page_config(page_title="LmcSelfies", layout="centered")
 
-# CSS personalizado para el botón y la barra de progreso en dispositivos móviles y PC
+# CSS personalizado
 st.markdown("""
 <style>
     .stButton>button {
         width: auto;
     }
-
-    /* Estilo contenedor responsive */
-    .responsive-container {
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        align-items: center;
-        justify-content: flex-start;
-        margin-top: 10px;
-        flex-wrap: wrap;
-    }
-
-    @media (max-width: 768px) {
-        .responsive-container {
-            flex-direction: column;
-            align-items: stretch;
-        }
-    }
-
-    .responsive-container .stButton {
-        flex-shrink: 0;
-    }
-
-    .responsive-container .progress-col {
-        flex-grow: 1;
-    }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Ocultar ícono de GitHub ---
+# Ocultar ícono de GitHub
 st.markdown("""
 <style>
     [data-testid="stDecoration"] {
@@ -50,15 +24,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Título
 st.markdown("<h3 style='text-align: center; color: #007BFF;'>📋HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
 
-# --- Inicializar estado ---
+# Estado inicial
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "dataframe" not in st.session_state:
     st.session_state.dataframe = pd.DataFrame()
 
-# --- Función para convertir fechas ---
+# Función para convertir fechas
 def convertir_fecha_hora(fecha_hora_str):
     meses = {
         "January": "01", "February": "02", "March": "03", "April": "04",
@@ -80,14 +55,11 @@ if not st.session_state.logged_in:
             usuario = st.text_input("👤 Humano ingrese su usuario:", max_chars=30)
             clave = st.text_input("🔑 Humano ingrese su Contraseña:", type="password", max_chars=20)
 
-            # Contenedor visual horizontal en PC y vertical en móviles
-            st.markdown('<div class="responsive-container">', unsafe_allow_html=True)
-            button_col, progress_col = st.columns([3, 1.5])
-            with button_col:
-                submitted = st.form_submit_button("🔓 Humano inicia sesión")
-            with progress_col:
-                progress_bar = st.progress(0)
-            st.markdown('</div>', unsafe_allow_html=True)
+            # Mostrar barra de progreso arriba del botón
+            progress_bar = st.progress(0)
+
+            # Botón
+            submitted = st.form_submit_button("🔓 Humano inicia sesión")
 
         if submitted:
             login_url = "http://sigof.distriluz.com.pe/plus/usuario/login"
