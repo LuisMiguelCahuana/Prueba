@@ -52,7 +52,7 @@ def convertir_fecha_hora(fecha_hora_str):
 
 # --- FORMULARIO DE LOGIN ---007BFF
 if not st.session_state.logged_in:
-    st.markdown("<h3 style='text-align: center; color: #28a745;'>📋 HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: #28a745;'>HUMANO INGRESA TUS CREDENCIALES DE SIGOF WEB📋</h3>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -108,8 +108,11 @@ if not st.session_state.logged_in:
                                 })
                         if registros:
                             df = pd.DataFrame(registros)
-                            st.session_state.logged_in = True
+                            #st.session_state.logged_in = True
+                            #st.session_state.dataframe = df
                             st.session_state.dataframe = df
+                            st.session_state.logged_in = True
+                            st.experimental_rerun()
                         else:
                             st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
 
