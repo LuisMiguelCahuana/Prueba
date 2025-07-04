@@ -112,7 +112,7 @@ if not st.session_state.logged_in:
                             #st.session_state.dataframe = df
                             st.session_state.dataframe = df
                             st.session_state.logged_in = True
-                            st.experimental_rerun()
+                            #st.experimental_rerun()
                         else:
                             st.warning("⚠️ Humano tu usuario o contraseña es incorrecta / no se encontró datos para exportar.")
 
